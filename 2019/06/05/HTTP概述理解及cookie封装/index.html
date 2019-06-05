@@ -1,0 +1,315 @@
+
+<!DOCTYPE html>
+<html lang class="loading">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HTTP概述理解及cookie封装 - Mr.Xiong</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate">
+    <meta name="keywords" content="Fechin,"> 
+    <meta name="description" content="HTTP协议介绍HTTP学习–MDN
+
+HTTP: 超文本传输协议（HyperText Transfer Protocol）它是客户端和web服务器数据传输的基础，现在基本上所有的web项目都遵从H,"> 
+    <meta name="author" content="熊"> 
+    <link rel="alternative" href="atom.xml" title="Mr.Xiong" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+    <link rel="stylesheet" href="/css/diaspora.css">
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8691406134231910",
+              enable_page_level_ads: true
+         });
+    </script>
+    <script async custom-element="amp-auto-ads" src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script>
+</head>
+</html>
+<body class="loading">
+    <span id="config-title" style="display:none">Mr.Xiong</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="icon-home image-icon" href="javascript:;" data-url="http://yoursite.com"></a>
+    <div title="播放/暂停" class="icon-play"></div>
+    <h3 class="subtitle">HTTP概述理解及cookie封装</h3>
+    <div class="social">
+        <!--<div class="like-icon">-->
+            <!--<a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
+        <!--</div>-->
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class="main">
+        <h1 class="title">HTTP概述理解及cookie封装</h1>
+        <div class="stuff">
+            <span>六月 05, 2019</span>
+            
+  <ul class="post-tags-list"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/javaScript/">javaScript</a></li><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/协议及cookie/">协议及cookie</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <h1 id="HTTP协议介绍"><a href="#HTTP协议介绍" class="headerlink" title="HTTP协议介绍"></a>HTTP协议介绍</h1><p><a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Overview" target="_blank" rel="noopener">HTTP学习–MDN</a></p>
+<ul>
+<li>HTTP: 超文本传输协议（HyperText Transfer Protocol）它是客户端和web服务器数据传输的基础，现在基本上所有的web项目都遵从HTTP协议。设计HTTP最初的目的是为了提供一种发布和接收HTML页面的方法。通过HTTP或者HTTPS协议请求服务器资源</li>
+<li><strong>HTTPS</strong>:超文本传输安全协议（<strong>Hypertext Transfer Protocol Secure</strong>）</li>
+</ul>
+<p>HTTP协议工作于客户端-服务端架构上。浏览器作为HTTP客户端通过URL向HTTP服务端即WEB服务器发送所有请求。Web服务器有：Apache服务器，IIS服务器（Internet Information Services）等。Web服务器根据接收到的请求后，向客户端发送响应信息。</p>
+<p>当我们打开浏览器，在地址栏中输入URL地址如：<br><code>http://baidu.com</code>，然后我们就看到了网页。 原理是怎样的呢？实际上我们输入URL后，浏览器会向Web服务器发送了一个Request, Web服务器接到Request后进行处理，然后服务器Response回来给浏览器，浏览器解析Response中的HTML,这样我们就看到了网页，过程如下图所示：<br><img src="./img/http-img/Image.png" alt="Image.png"></p>
+<h1 id="URL"><a href="#URL" class="headerlink" title="URL"></a>URL</h1><p>URL: URL(Uniform Resource Locator) 统一资源定位符。作用:就是用于找到一个网络上的资源<br>如：</p>
+<ul>
+<li><code>http://xxx.com/src/1.html</code>找到了服务器1.html资源文件    </li>
+<li><code>http://xxx.com/images/1.png</code>找到了服务器1.png资源文件</li>
+<li><em>URI*</em>:统一资源标识符（Uniform Resource Identifier）<blockquote>
+<p>注意：url只是标识资源，但不知道在哪找。开发中一般只说URL.</p>
+</blockquote>
+</li>
+</ul>
+<h1 id="URL基本构成"><a href="#URL基本构成" class="headerlink" title="URL基本构成"></a>URL基本构成</h1><p>URL(Uniform Resource Locator) 地址用于定位一个网络上的资源,  基本格式如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">schema://host[:port]/path/[?query-string][#anchor]</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>scheme 指定低层使用的协议(例如：http, https, ftp)</p>
+<ul>
+<li>host            HTTP服务器的IP地址或者域名port            HTTP服务器的默认端口是80，这种情况下端口号可以省略。如果使用了别的端口，必须指明，例如 <a href="http://www.baidu.com:8080/path" target="_blank" rel="noopener">http://www.baidu.com:8080/path</a>            访问资源的路径query-string     发送给http服务器的数据查询字符串  </li>
+<li>anchor           锚点<br>URL的一个例子<br><a href="http://www.baidu.com/a/b/index.phpname=dachui&amp;age=33#header" target="_blank" rel="noopener">http://www.baidu.com/a/b/index.phpname=dachui&amp;age=33#header</a></li>
+</ul>
+<p>Schema:        http<br>host:           <a href="http://www.baidu.com" target="_blank" rel="noopener">www.baidu.com</a><br>path:           /a/b/index.php<br>Query String:    name=dachui&amp;age=33<br>Anchor:         header</p>
+<h1 id="HTTP最大特点：无状态。"><a href="#HTTP最大特点：无状态。" class="headerlink" title="HTTP最大特点：无状态。"></a>HTTP最大特点：无状态。</h1><p>http协议是无状态的，同一个客户端的这次请求和上次请求是没有对应关系，对http服务器来说，它并不知道这两个请求来自同一个客户端。 为了解决这个问题， Web程序引入了Cookie机制来维护状态。</p>
+<h1 id="HTTP消息的结构"><a href="#HTTP消息的结构" class="headerlink" title="HTTP消息的结构"></a>HTTP消息的结构</h1><p>一个完整的http请求应该包含<code>请求(Request)</code>和<code>响应(Response)</code>部分。</p>
+<h2 id="请求（Request）"><a href="#请求（Request）" class="headerlink" title="请求（Request）"></a>请求（Request）</h2><p>先看Request消息的结构,   Request 消息分为4部分，</p>
+<ul>
+<li>第一部分：Request line(请求行)</li>
+<li>第二部分：Request header(请求头部)</li>
+<li>第三部分：空行</li>
+<li>第四部分：Request body(请求数据)结构如下图：<br><img src="./img/http-img/Image1.png" alt="Image1.png"></li>
+</ul>
+</li>
+</ul>
+<p>第一行中的Method：表示请求方法,比如&quot;POST&quot;,&quot;GET&quot;, Path-to-resoure表示请求的资源， Http/version-number 表示HTTP协议的版本号。</p>
+<p>第二行：<a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers" target="_blank" rel="noopener">http请求头部</a></p>
+<p>第三行：空行</p>
+<p>第四行：请求数据（针对于post请求）</p>
+<p>1、如下get请求结构：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">get /a/b/index.php HTTP/1.1</span><br><span class="line">Host: www.xxx.com</span><br><span class="line">User-Agent: Mozilla/5.0</span><br></pre></td></tr></table></figure>
+
+<p>2、post请求结构</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">post /a/b/index.php HTTP/1.1</span><br><span class="line">Host: www.xxx.com</span><br><span class="line">User-Agent: Mozilla/5.0 </span><br><span class="line"></span><br><span class="line">name=dachui&amp;amp;age=18</span><br></pre></td></tr></table></figure>
+
+<h2 id="响应（Response）"><a href="#响应（Response）" class="headerlink" title="响应（Response）"></a>响应（Response）</h2><p>HTTP响应也由四个部分组成，分别是：状态行、消息报头、空行和响应正文。</p>
+<hr>
+<p><img src="./img/http-img/Image.jpg" alt="Image.jpg"></p>
+<p>其中状态行由<code>协议/版本号 状态码 状态文本</code>三部分构成</p>
+<h2 id="状态码"><a href="#状态码" class="headerlink" title="状态码"></a>状态码</h2><p><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Status" target="_blank" rel="noopener">状态码</a>代表着http请求是否成功，还是失败等信息。</p>
+<p>状态码由三位数组构成：</p>
+<ul>
+<li><p>1xx: 信息，服务器收到请求，继续处理</p>
+</li>
+<li><p>2xx: 成功。 作被成功接收并处理</p>
+</li>
+<li><p>3xx: 重定向，需要进一步操作才能完成请求</p>
+</li>
+<li><p>4xx: 客户端错误，请求包含语法错误或无法完成请求</p>
+</li>
+<li><p>5xx: 服务端内部错误。</p>
+<p>下面是常见的HTTP状态码（HTTP Status Code）：</p>
+<ul>
+<li><p>200：请求成功301：网页（元等）被永久转移到其它URL</p>
+</li>
+<li><p>304：未被修改，说明此资源被浏览器缓存了</p>
+</li>
+<li><p>404：找不到此网页（资源）</p>
+</li>
+<li><p>500：内部服务器错误其</p>
+</li>
+<li><p><a href="https://www.runoob.com/http/http-status-codes.html" target="_blank" rel="noopener">他状态码解释</a></p>
+</li>
+</ul>
+<h2 id="get和post区别"><a href="#get和post区别" class="headerlink" title="get和post区别"></a>get和post区别</h2><ul>
+<li><p>get参数通过url传递，post放在请求体（request body）中</p>
+</li>
+<li><p>get请求在url传递的参数有长度限制，而post没有</p>
+</li>
+<li><p>get比post更不安全，因为参数直接显示在url地址中，所以不能传递敏感数据</p>
+</li>
+<li><p>get请求浏览器会主动缓存，而post不会</p>
+</li>
+<li><p>get请求参数会保存在浏览历史记录，而post请求不会<br>相同点：</p>
+</li>
+<li><p>get和post本质上都是tcp连接。</p>
+<h1 id="COOKIE"><a href="#COOKIE" class="headerlink" title="COOKIE"></a>COOKIE</h1><h2 id="cookie基本概念"><a href="#cookie基本概念" class="headerlink" title="cookie基本概念"></a>cookie基本概念</h2><p>Cookie是一种会话跟踪技术，其是保存在浏览器本地中的一小块数据，每个Cookie的大小一般在4KB左右，因浏览器而异。</p>
+</li>
+<li><p>会话：用户进入网站，开始浏览信息到关闭浏览器的过程，就称之为是一次会话。</p>
+</li>
+<li><p>会话跟踪技术：浏览器（客户端）和服务器之间在进行多次请求间共享数据的过程，就称为会话跟踪技术。</p>
+</li>
+</ul>
+<p>Cookie 主要用来分辨两个请求是否来自同一个浏览器，它会在浏览器下次向同一服务器再次发起请求时被携带并发送到服务器上，从而辨别是否是来自同一浏览器。 因为<code>*http是无状态*</code>的。</p>
+<p>主要应用场景：</p>
+<ul>
+<li>会话状态管理（如用户登录状态、购物车等）<br>个性化设置（保存用户设置的背景色等）<br>浏览器行为跟踪（如跟踪分析用户行为等）<br>查看当前域名下面的所有cookie<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">document</span>.cookie</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>查看浏览器是否打开 Cookie 功能</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">window</span>.navigator.cookieEnabled <span class="comment">//true</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="cookie操作"><a href="#cookie操作" class="headerlink" title="cookie操作"></a>cookie操作</h2><p>可以通过js或服务端语言（如PHP、java）来操作。</p>
+</li>
+</ul>
+<h3 id="js操作cookie设置"><a href="#js操作cookie设置" class="headerlink" title="js操作cookie设置"></a>js操作cookie设置</h3><ul>
+<li>设置cookie:</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">document</span>.cookie=<span class="string">"username=tom"</span><span class="built_in">document</span>.cookie=<span class="string">"id=100"</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>存数组或对象需要进行转换</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">JSON.stringify() : 将对象转化为字符串类型</span><br><span class="line">JSON.parse() : 将字符串转化为对象类型</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>设置cookie有效期</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> d = <span class="keyword">new</span> <span class="built_in">Date</span>();</span><br><span class="line">d.setDate( d.getDate() + <span class="number">2</span> ); <span class="comment">//有效期两天</span></span><br><span class="line"><span class="built_in">document</span>.cookie=<span class="string">"username=tom;expires="</span>+d</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>获取cookie</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">document</span>.cookie</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>删除cookie</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">document</span>.cookie=<span class="string">"username=''"</span><span class="comment">//设置为空</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>或者</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">document</span>.cookie=<span class="string">"username='';expire=-1"</span><span class="comment">//设置时间为负数</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="封装cookie"><a href="#封装cookie" class="headerlink" title="封装cookie"></a>封装cookie</h3><ul>
+<li><p>设置cookie</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">setCookie</span>(<span class="params">k,v,d</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(d)&#123;</span><br><span class="line">         <span class="keyword">var</span> d = <span class="keyword">new</span> <span class="built_in">Date</span>();</span><br><span class="line">         d.setDate( d.getDate() + d );</span><br><span class="line">         <span class="built_in">document</span>.cookie=k+<span class="string">'='</span>+v + <span class="string">";expires="</span>+d;</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">         <span class="built_in">document</span>.cookie=k+<span class="string">'='</span>+v;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>获取cookie</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"> <span class="function"><span class="keyword">function</span> <span class="title">getCookie</span>(<span class="params">k</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">document</span>.cookie)&#123;</span><br><span class="line">        <span class="keyword">var</span> cookie = <span class="built_in">document</span>.cookie;</span><br><span class="line">        <span class="keyword">var</span> arr = cookie.split(<span class="string">'; '</span>);</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; arr.length; i++)&#123;</span><br><span class="line">            <span class="keyword">var</span> items = arr[i].split(<span class="string">'='</span>);</span><br><span class="line">            <span class="keyword">if</span>(items[<span class="number">0</span>]==k)&#123;</span><br><span class="line">            <span class="keyword">return</span> items[<span class="number">1</span>]</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">""</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>删除cookie</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"> <span class="function"><span class="keyword">function</span> <span class="title">removeCookie</span>(<span class="params">k</span>)</span>&#123;</span><br><span class="line">    setCookie(k,<span class="string">" "</span>,<span class="number">-1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h2 id="cookie实现注册登录核心点："><a href="#cookie实现注册登录核心点：" class="headerlink" title="cookie实现注册登录核心点："></a>cookie实现注册登录核心点：</h2><p>1、注册页面存储cookie成功跳转到登录页面<br>2、登录页面点击登录按钮去cookie中进行用户名和密码匹配</p>
+<h2 id="php操作cookie-了解"><a href="#php操作cookie-了解" class="headerlink" title="php操作cookie(了解)"></a>php操作cookie(了解)</h2><p>通过setcookie函数进行操作：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">setcookie ( string $name [, string $value = <span class="string">";"</span>; [, int $expires = <span class="number">0</span> [, string $path = <span class="string">""</span>[, string $domain = <span class="string">""</span> [, bool$secure = <span class="keyword">FALSE</span> [, bool $httponly = <span class="keyword">FALSE</span> ]]]]]] )</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://www.php.net/manual/en/function.setcookie.php" target="_blank" rel="noopener">php设置cookie</a></p>
+</li>
+</ul>
+<h2 id="cookie注意问题"><a href="#cookie注意问题" class="headerlink" title="cookie注意问题"></a>cookie注意问题</h2><ul>
+<li><p>当设置cookie后，向服务器发起的每一次新请求，浏览器都会将之前保存的Cookie信息通过Cookie请求头部再发送给服务器，其目的为了识别是同一个客户端。</p>
+</li>
+<li><p>Path。 cookie访问路径。 如果cookie设置的所在路径为<code>&quot;/&quot;</code>、则cookie在整个域中都可用。 如果cookie设置的所在路径为<code>/foo/</code>则cookie仅在/foo目录及其所有子目录可用，如/foo/bar/目录可访问。 不设置路径默认是当前目录。<strong>即cookie是不能跨目录访问</strong>。</p>
+</li>
+<li><p>httpOnly。设置为则只能通过HTTP协议访问cookie,意味着无法通过JS来访问cookie,这可有效减少XSS的攻击。<br>  <a href="https://baike.baidu.com/item/XSS%E6%94%BB%E5%87%BB/954065?fr=aladdin" target="_blank" rel="noopener">XSS攻击–百度搜索</a></p>
+</li>
+<li><p>Cookie中最好不要放敏感数据，因为用户可以篡改。</p>
+</li>
+</ul>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src>
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        <li title="0" data-url="http://link.hhtjim.com/163/5146554.mp3"></li>
+                    
+                        <li title="1" data-url="http://link.hhtjim.com/qq/001faIUs4M2zna.mp3"></li>
+                    
+                </ul>
+            
+        </div>
+        
+    <div id="gitalk-container" class="comment link" data-ae="false" data-ci data-cs data-r data-o data-a data-d="false">查看评论</div>
+
+
+    </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/diaspora.js"></script>
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+</html>
